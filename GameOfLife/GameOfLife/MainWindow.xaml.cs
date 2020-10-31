@@ -26,6 +26,8 @@ namespace GameOfLife
         private Board board;
         public string numberOfGens { get; set; }
         private Storyboard myStoryboard;
+        public bool figure = false;
+        private List<Tuple<int, int>> figurePos;
 
         public MainWindow()
         {
@@ -51,7 +53,7 @@ namespace GameOfLife
                     Rectangle rectangle = new Rectangle();
                     rectangle.Width = GameBoard.Width / board.GetWidth() - 2.0;
                     rectangle.Height = GameBoard.Height / board.GetHeight() - 2.0;
-                    rectangle.Fill = board.GetFieldColor(i,j);
+                    rectangle.Fill = board.GetFieldColor(i, j);
                     GameBoard.Children.Add(rectangle);
                     Canvas.SetLeft(rectangle, j * GameBoard.Width / board.GetWidth());
                     Canvas.SetTop(rectangle, i * GameBoard.Height / board.GetHeight());
@@ -69,7 +71,7 @@ namespace GameOfLife
             }
             else
             {
-                y = Convert.ToInt32(Canvas.GetLeft(((Rectangle)sender)) / (GameBoard.Height / board.GetHeight()));
+                y = Convert.ToInt32(Canvas.GetLeft(((Rectangle) sender)) / (GameBoard.Height / board.GetHeight()));
             }
 
             if (Canvas.GetTop(((Rectangle) sender)) == 0)
@@ -78,18 +80,28 @@ namespace GameOfLife
             }
             else
             {
-                x = Convert.ToInt32(Canvas.GetTop(((Rectangle)sender)) / (GameBoard.Width / board.GetWidth()));
+                x = Convert.ToInt32(Canvas.GetTop(((Rectangle) sender)) / (GameBoard.Width / board.GetWidth()));
             }
 
-            if (board.GetFieldColor(x, y) == Brushes.GreenYellow)
+            if (!figure)
             {
-                ((Rectangle) sender).Fill = Brushes.DarkCyan;
-                board.setField(x, y, board.GetEmptyField());
+                if (board.GetFieldColor(x, y) == Brushes.GreenYellow)
+                {
+                    ((Rectangle) sender).Fill = Brushes.DarkCyan;
+                    board.setField(x, y, board.GetEmptyField());
+                }
+                else
+                {
+                    ((Rectangle) sender).Fill = Brushes.GreenYellow;
+                    board.setField(x, y, board.GetAliveField());
+                }
             }
             else
             {
-                ((Rectangle)sender).Fill = Brushes.GreenYellow;
-                board.setField(x, y, board.GetAliveField());
+                board.AddFigure(x,y, figurePos);
+                GameBoard.Children.Clear();
+                DrawBoard();
+                figure = false;
             }
         }
 
@@ -138,7 +150,24 @@ namespace GameOfLife
             }
         }
 
-        private void ButtonStartGen_Click(object sender, RoutedEventArgs e)
+        private void SizeParameters_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var life = int.Parse(LifeTextBox.Text);
+                var stayAlive = int.Parse(StayAliveTextBox.Text);
+                var toBeBorn = int.Parse(BornTextBox.Text);
+                board.SetLife(life);
+                board.SetNeighborsToStayAlive(stayAlive);
+                board.SetNeighborsToBeBorn(toBeBorn);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.ToString());
+            }
+        }
+
+    private void ButtonStartGen_Click(object sender, RoutedEventArgs e)
         {
             int i = 0;
             int num = 0;
@@ -162,5 +191,37 @@ namespace GameOfLife
             DrawBoard();
         
         }
+
+        private void PasteCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = (HeightTextBox != null) && (WidthTextBox != null);
+        }
+
+        private void PasteCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            HeightTextBox.Text = "";
+            WidthTextBox.Text = "";
+            HeightTextBox.Paste();
+            WidthTextBox.Paste();
+        }
+
+        private void TubButton_Click(object sender, RoutedEventArgs e)
+        {
+            figure = true;
+            figurePos = Figures.Tub();
+        }
+
+        private void FrogButton_Click(object sender, RoutedEventArgs e)
+        {
+            figure = true;
+            figurePos = Figures.Frog();
+        }
+
+        private void GliderButton_Click(object sender, RoutedEventArgs e)
+        {
+            figure = true;
+            figurePos = Figures.Glider();
+        }
+
     }
 }

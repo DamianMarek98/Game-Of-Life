@@ -5,7 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameOfLife"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="500" Width="800">
+
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Paste" CanExecute="PasteCommand_CanExecute" Executed="PasteCommand_Executed" />
+    </Window.CommandBindings>
+
 
     <Window.Resources>
         <DataTemplate DataType="{x:Type local:Info}">
@@ -15,7 +20,7 @@
                         <Run Text="Version: "/>
                         <TextBlock Text="{Binding Version}"/>
                         <Run Text=", "/>
-                        <TextBlock Text="{Binding Year}" />
+                        <TextBlock Text="{Binding Author}" />
                     </TextBlock>
                 </Grid>
             </Border>
@@ -31,31 +36,35 @@
     </Window.Resources>
 
     <Grid>
-        <Canvas x:Name="GameBoard" HorizontalAlignment="Left" Height="300" Margin="265,50,0,0" VerticalAlignment="Top" Width="300"/>
-        <Button x:Name="RestartButton" Content="Restart" Style = "{StaticResource TriggerStyle}" HorizontalAlignment="Left" Margin="60,80,0,0" VerticalAlignment="Top" Width="75" Click="ButtonStart_Click"/>
-        <Button x:Name="NextTurn" Content="Next gen" HorizontalAlignment="Left" Margin="60,115,0,0" VerticalAlignment="Top" Width="75" Click="ButtonNextTurn_Click"/>
-        <Button x:Name="Save" Content="Save" HorizontalAlignment="Left" Margin="60,210,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.133,0.5" Click="ButtonSave_Click"/>
-        <Button x:Name="Load" Content="Load" HorizontalAlignment="Left" Margin="60,245,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.067,0.75" Click="BottonLoad_Click"/>
-        <TextBox x:Name="HeightTextBox" HorizontalAlignment="Left" Height="23" Margin="685,85,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30" PreviewTextInput="NumberValidationTextBox"/>
-        <TextBox x:Name="WidthTextBox" HorizontalAlignment="Left" Height="23" Margin="685,117,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30" PreviewTextInput="NumberValidationTextBox"/>
-        <Label Content="Height:" HorizontalAlignment="Left" Margin="635,85,0,0" VerticalAlignment="Top" Height="25"/>
-        <Label Content="Width:" HorizontalAlignment="Left" Margin="635,110,0,0" VerticalAlignment="Top" Height="25"/>
-        <Button x:Name="SetSizeButton" Content="Set" HorizontalAlignment="Left" Margin="640,150,0,0" VerticalAlignment="Top" Width="75" Click="SizeButton_Click">
+        <DockPanel Margin="0,0,0,434">
+            <WrapPanel DockPanel.Dock="Top" Margin="3">
+                <Button Command="ApplicationCommands.Paste" Width="60">_Paste</Button>
+            </WrapPanel>
+        </DockPanel>
+        <Canvas x:Name="GameBoard" HorizontalAlignment="Left" Height="300" Margin="265,85,0,0" VerticalAlignment="Top" Width="300"/>
+        <Button x:Name="RestartButton" Content="Restart" Style = "{StaticResource TriggerStyle}" HorizontalAlignment="Left" Margin="60,118,0,0" VerticalAlignment="Top" Width="75" Click="ButtonStart_Click" Height="22"/>
+        <Button x:Name="NextTurn" Content="Next gen" HorizontalAlignment="Left" Margin="60,156,0,0" VerticalAlignment="Top" Width="75" Click="ButtonNextTurn_Click" Height="22"/>
+        <Button x:Name="Save" Content="Save" HorizontalAlignment="Left" Margin="60,257,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.133,0.5" Click="ButtonSave_Click" Height="22"/>
+        <Button x:Name="Load" Content="Load" HorizontalAlignment="Left" Margin="60,295,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.067,0.75" Click="BottonLoad_Click" Height="22"/>
+        <TextBox x:Name="HeightTextBox" HorizontalAlignment="Left" Height="24" Margin="685,112,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30" PreviewTextInput="NumberValidationTextBox"/>
+        <TextBox x:Name="WidthTextBox" HorizontalAlignment="Left" Height="24" Margin="685,145,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30" PreviewTextInput="NumberValidationTextBox"/>
+        <Label Content="Height:" HorizontalAlignment="Left" Margin="635,112,0,0" VerticalAlignment="Top" Height="26"/>
+        <Label Content="Width:" HorizontalAlignment="Left" Margin="635,138,0,0" VerticalAlignment="Top" Height="26"/>
+        <Button x:Name="SetSizeButton" Content="Set" HorizontalAlignment="Left" Margin="640,179,0,0" VerticalAlignment="Top" Width="75" Click="SizeButton_Click" Height="21">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="Background" Value="LightBlue" />
                 </Style>
             </Button.Style>
         </Button>
-        <Button Content="Start" HorizontalAlignment="Left" Margin="60,150,0,0" VerticalAlignment="Top" Width="75" Click="ButtonStartGen_Click"/>
-        <TextBox x:Name="TurnTextBox" Text="{Binding numberOfGens, ElementName=MainWin}" HorizontalAlignment="Left" Height="23" Margin="183,147,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="30" PreviewTextInput="NumberValidationTextBox" RenderTransformOrigin="-0.167,-3.261">
+        <Button Content="Start" HorizontalAlignment="Left" Margin="60,194,0,0" VerticalAlignment="Top" Width="75" Click="ButtonStartGen_Click" Height="21"/>
+        <TextBox x:Name="TurnTextBox" Text="{Binding numberOfGens, ElementName=MainWin}" HorizontalAlignment="Left" Height="25" Margin="183,190,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="30" PreviewTextInput="NumberValidationTextBox" RenderTransformOrigin="-0.167,-3.261">
         </TextBox>
-        <Label Content="Gens:" HorizontalAlignment="Left" Margin="140,145,0,0" VerticalAlignment="Top" Height="25" RenderTransformOrigin="2.641,0"/>
-        <StackPanel x:Name="StackPanel" HorizontalAlignment="Left" Height="40" Margin="410,10,0,0" VerticalAlignment="Top" Width="210">
+        <Label Content="Gens:" HorizontalAlignment="Left" Margin="140,189,0,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="2.641,0"/>
+        <StackPanel x:Name="StackPanel" HorizontalAlignment="Left" Height="40" Margin="410,35,0,0" VerticalAlignment="Top" Width="210">
             <StackPanel.Resources>
-                <local:Info x:Key="theInfo" Year="2020" Version="v0.8"/>
+                <local:Info x:Key="theInfo" Author="Damian Marek" Version="v0.8"/>
             </StackPanel.Resources>
-            <ContentControl Content="{StaticResource theInfo}" Margin="-75,0,120,0" />
             <StackPanel.Triggers>
                 <EventTrigger RoutedEvent="StackPanel.Loaded">
                     <BeginStoryboard>
@@ -69,7 +78,20 @@
                     </BeginStoryboard>
                 </EventTrigger>
             </StackPanel.Triggers>
+            <ContentControl Content="{StaticResource theInfo}" Margin="-85,0,100,0" />
         </StackPanel>
+        <TextBox x:Name="LifeTextBox" HorizontalAlignment="Left" Height="24" Margin="675,241,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30" PreviewTextInput="NumberValidationTextBox"/>
+        <Label Content="life parameter:" HorizontalAlignment="Left" Margin="580,239,0,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.116,1.192"/>
+        <Button x:Name="SetSParametersButton" Content="Set" HorizontalAlignment="Left" Margin="640,339,0,0" VerticalAlignment="Top" Width="75" Click="SizeParameters_Click" Height="21">
+        </Button>
+        <Label Content="Stay alive:" HorizontalAlignment="Left" Margin="579,269,0,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.116,1.192"/>
+        <Label Content="Born:" HorizontalAlignment="Left" Margin="585,304,0,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.116,1.192"/>
+        <TextBox x:Name="StayAliveTextBox" HorizontalAlignment="Left" Height="24" Margin="675,301,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30" PreviewTextInput="NumberValidationTextBox"/>
+        <TextBox x:Name="BornTextBox" HorizontalAlignment="Left" Height="24" Margin="675,270,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30" PreviewTextInput="NumberValidationTextBox"/>
+        <Button x:Name="TabButton" Content="Tab" HorizontalAlignment="Left" Margin="55,400,0,0" VerticalAlignment="Top" Width="75" Click="TubButton_Click"/>
+        <Label Content="Figures:" HorizontalAlignment="Left" Margin="58,340,0,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.116,1.192"/>
+        <Button x:Name="GliderButton" Content="Glider" HorizontalAlignment="Left" Margin="55,370,0,0" VerticalAlignment="Top" Width="75" Click="GliderButton_Click"/>
+        <Button x:Name="FrogButton" Content="Frog" HorizontalAlignment="Left" Margin="55,430,0,0" VerticalAlignment="Top" Width="75" Click="FrogButton_Click"/>
 
     </Grid>
 

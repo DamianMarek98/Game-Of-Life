@@ -8,7 +8,7 @@ namespace GameOfLife
 {
     class Info
     {
-        public string Year { get; set; }
+        public string Author { get; set; }
         public string Version { get; set; }
     }
 }

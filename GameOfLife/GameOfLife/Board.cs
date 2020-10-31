@@ -15,10 +15,16 @@ namespace GameOfLife
         private int Width = 20;
         private int Height = 20;
         private int[,] fields; //x - height, y - width
+        private int[,] fieldsLifeCounter;
         public static readonly int EMPTY_FIELD = 0;
         public static readonly int ALIVE_FIELD = 1;
         public static readonly int GOING_TO_DIE = 2;
         public static readonly int JUST_BORN = 3;
+
+        public int lifeParameter = 0;
+        public int neighborsToStayAliveParameter = 0;
+        public int neighborsToBeBornParameter = 3;
+
 
         private static readonly string START_FILE_PATH =
             @"C:\Users\zmddd\Desktop\Studia\Semestr VII\PLANET\Game-Of-Life\GameOfLife\GameOfLife\Resources\StartBoard.txt";
@@ -41,12 +47,14 @@ namespace GameOfLife
                     SetWidth(Int32.Parse(sr.ReadLine()));
 
                     fields = new int[Height, Width];
+                    fieldsLifeCounter = new int[Height, Width];
                     for (var i = 0; i < GetHeight(); i++)
                     {
                         string row = sr.ReadLine();
                         for (var j = 0; j < row.Length; j++)
                         {
                             fields[i, j] = (int) Char.GetNumericValue(row[j]);
+                            fieldsLifeCounter[i, j] = 0;
                         }
                     }
                 }
@@ -100,8 +108,8 @@ namespace GameOfLife
                 for (var j = 0; j < GetWidth(); j++)
                 {
                     int neighbors = CountNeighbors(i, j, fields);
-                    if (neighbors == 3 && !isAlive(fields[i, j])) newFields[i, j] = ALIVE_FIELD;
-                    else if (!(neighbors == 2 || neighbors == 3) && isAlive(fields[i, j]))
+                    if (neighbors == neighborsToBeBornParameter && !isAlive(fields[i, j])) newFields[i, j] = ALIVE_FIELD;
+                    else if (!neighborsToStayAlive(neighbors) && isAlive(fields[i, j]))
                         newFields[i, j] = EMPTY_FIELD;
                 }
             }
@@ -114,11 +122,65 @@ namespace GameOfLife
                     if (!isAlive(fields[i, j]) && newFields[i, j] == ALIVE_FIELD) newFields[i, j] = JUST_BORN;
                     else if (isAlive(fields[i, j]) && isAlive(newFields[i, j])) newFields[i, j] = ALIVE_FIELD;
 
-                    if (!(neighbors == 2 || neighbors == 3) && isAlive(newFields[i, j])) newFields[i, j] = GOING_TO_DIE;
+                    if (!neighborsToStayAlive(neighbors) && isAlive(newFields[i, j])) newFields[i, j] = GOING_TO_DIE;
+
+                    //life counting
+                    if (lifeParameter != 0)
+                    {
+                        if (isAlive(newFields[i, j]))
+                        {
+                            fieldsLifeCounter[i, j] = ++fieldsLifeCounter[i, j];
+                            if (fieldsLifeCounter[i, j] == lifeParameter)
+                            {
+                                newFields[i, j] = EMPTY_FIELD;
+                                fieldsLifeCounter[i, j] = 0;
+                            }
+                        }
+                        else
+                        {
+                            fieldsLifeCounter[i, j] = 0;
+                        }
+                    }
+                }
+            }
+
+            for (var i = 0; i < GetHeight(); i++)
+            {
+                for (var j = 0; j < GetWidth(); j++)
+                {
+                    //life counting
+                    if (lifeParameter != 0)
+                    {
+                        if (isAlive(newFields[i, j]))
+                        {
+                            fieldsLifeCounter[i, j] = ++fieldsLifeCounter[i, j];
+                            if (fieldsLifeCounter[i, j] == lifeParameter)
+                            {
+                                newFields[i, j] = EMPTY_FIELD;
+                                fieldsLifeCounter[i, j] = 0;
+                            }
+                        }
+                        else
+                        {
+                            fieldsLifeCounter[i, j] = 0;
+                        }
+                    }
                 }
             }
 
             fields = newFields;
+        }
+
+        public bool neighborsToStayAlive(int neighbors)
+        {
+            if (neighborsToStayAliveParameter != 0)
+            {
+                return neighbors == neighborsToStayAliveParameter;
+            }
+            else
+            {
+                return (neighbors == 2 || neighbors == 3);
+            }
         }
 
         public void SetWidth(int width)
@@ -139,6 +201,21 @@ namespace GameOfLife
         public int GetHeight()
         {
             return Height;
+        }
+
+        public void SetLife(int life)
+        {
+            lifeParameter = life;
+        }
+
+        public void SetNeighborsToStayAlive(int param)
+        {
+            neighborsToStayAliveParameter = param;
+        }
+
+        public void SetNeighborsToBeBorn(int param)
+        {
+            neighborsToBeBornParameter = param;
         }
 
         public SolidColorBrush GetFieldColor(int x, int y)
@@ -232,6 +309,7 @@ namespace GameOfLife
             Height = x;
             Width = y;
             fields = new int[Height, Width];
+            fieldsLifeCounter = new int[Height, Width];
 
             for (var i = 0; i < GetHeight(); i++)
             {
@@ -245,7 +323,27 @@ namespace GameOfLife
                     {
                         fields[i, j] = EMPTY_FIELD;
                     }
+
+                    fieldsLifeCounter[i, j] = 0;
                 }
+            }
+        }
+
+
+
+        public void AddFigure(int x, int y, List<Tuple<int, int>> pos)
+        {
+            foreach (var position in pos)
+            {
+                SetField(x + position.Item1, y + position.Item2);
+            }
+        }
+
+        public void SetField(int x, int y)
+        {
+            if (x >= 0 && x < Height && y >= 0 && y < Width)
+            {
+                fields[x, y] = JUST_BORN;
             }
         }
     }
