@@ -17,6 +17,8 @@ namespace GameOfLife
         private int[,] fields; //x - height, y - width
         public static readonly int EMPTY_FIELD = 0;
         public static readonly int ALIVE_FIELD = 1;
+        public static readonly int GOING_TO_DIE = 2;
+        public static readonly int JUST_BORN = 3;
 
         private static readonly string START_FILE_PATH =
             @"C:\Users\zmddd\Desktop\Studia\Semestr VII\PLANET\Game-Of-Life\GameOfLife\GameOfLife\Resources\StartBoard.txt";
@@ -97,10 +99,22 @@ namespace GameOfLife
             {
                 for (var j = 0; j < GetWidth(); j++)
                 {
-                    int neighbors = CountNeighbors(i, j);
-                    if (neighbors == 3 && fields[i, j] != ALIVE_FIELD) newFields[i, j] = ALIVE_FIELD;
-                    else if (!(neighbors == 2 || neighbors == 3) && fields[i, j] == ALIVE_FIELD)
+                    int neighbors = CountNeighbors(i, j, fields);
+                    if (neighbors == 3 && !isAlive(fields[i, j])) newFields[i, j] = ALIVE_FIELD;
+                    else if (!(neighbors == 2 || neighbors == 3) && isAlive(fields[i, j]))
                         newFields[i, j] = EMPTY_FIELD;
+                }
+            }
+
+            for (var i = 0; i < GetHeight(); i++)
+            {
+                for (var j = 0; j < GetWidth(); j++)
+                {
+                    int neighbors = CountNeighbors(i, j, newFields);
+                    if (!isAlive(fields[i, j]) && newFields[i, j] == ALIVE_FIELD) newFields[i, j] = JUST_BORN;
+                    else if (isAlive(fields[i, j]) && isAlive(newFields[i, j])) newFields[i, j] = ALIVE_FIELD;
+
+                    if (!(neighbors == 2 || neighbors == 3) && isAlive(newFields[i, j])) newFields[i, j] = GOING_TO_DIE;
                 }
             }
 
@@ -131,6 +145,8 @@ namespace GameOfLife
         {
             int field = fields[x, y];
             if (field == ALIVE_FIELD) return Brushes.GreenYellow;
+            else if (field == JUST_BORN) return Brushes.DarkOrange;
+            else if (field == GOING_TO_DIE) return Brushes.Black;
             else return Brushes.DarkCyan;
         }
 
@@ -149,50 +165,55 @@ namespace GameOfLife
             return ALIVE_FIELD;
         }
 
-        private int CountNeighbors(int x, int y)
+        private int CountNeighbors(int x, int y, int [,] fieldsToCheck)
         {
             int counter = 0;
             if (x - 1 >= 0 && y - 1 >= 0) //high left
             {
-                if (fields[x - 1, y - 1] == ALIVE_FIELD) counter++;
+                if (isAlive(fieldsToCheck[x - 1, y - 1])) counter++;
             }
 
             if (x - 1 >= 0) //high
             {
-                if (fields[x - 1, y] == ALIVE_FIELD) counter++;
+                if (isAlive(fieldsToCheck[x - 1, y])) counter++;
             }
 
             if (y - 1 >= 0) //left
             {
-                if (fields[x, y - 1] == ALIVE_FIELD) counter++;
+                if (isAlive(fieldsToCheck[x, y - 1])) counter++;
             }
 
             if (x - 1 >= 0 && y + 1 < Width) //high right
             {
-                if (fields[x - 1, y + 1] == ALIVE_FIELD) counter++;
+                if (isAlive(fieldsToCheck[x - 1, y + 1])) counter++;
             }
 
             if (x + 1 < Height && y - 1 >= 0) //down left
             {
-                if (fields[x + 1, y - 1] == ALIVE_FIELD) counter++;
+                if (isAlive(fieldsToCheck[x + 1, y - 1])) counter++;
             }
 
             if (x + 1 < Height && y + 1 < Width) //down right
             {
-                if (fields[x + 1, y + 1] == ALIVE_FIELD) counter++;
+                if (isAlive(fieldsToCheck[x + 1, y + 1])) counter++;
             }
 
             if (x + 1 < Height) //down
             {
-                if (fields[x + 1, y] == ALIVE_FIELD) counter++;
+                if (isAlive(fieldsToCheck[x + 1, y])) counter++;
             }
 
             if (y + 1 < Width) //down right
             {
-                if (fields[x, y + 1] == ALIVE_FIELD) counter++;
+                if (isAlive(fieldsToCheck[x, y + 1])) counter++;
             }
 
             return counter;
+        }
+
+        public bool isAlive(int field)
+        {
+            return field == ALIVE_FIELD || field == GOING_TO_DIE || field == JUST_BORN;
         }
 
         public void resizeBoard(int x, int y)
