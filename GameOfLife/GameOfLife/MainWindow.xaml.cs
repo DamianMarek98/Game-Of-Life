@@ -15,6 +15,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GameOfLife.UserControls;
 
 namespace GameOfLife
 {
@@ -33,6 +34,7 @@ namespace GameOfLife
         {
             InitializeComponent();
             board = new Board();
+            Params.Board = board;
             HeightTextBox.Text = board.GetHeight().ToString();
             WidthTextBox.Text = board.GetWidth().ToString();
             DrawBoard();
@@ -71,7 +73,7 @@ namespace GameOfLife
             }
             else
             {
-                y = Convert.ToInt32(Canvas.GetLeft(((Rectangle) sender)) / (GameBoard.Height / board.GetHeight()));
+                y = Convert.ToInt32(Canvas.GetLeft(((Rectangle) sender)) / (GameBoard.Width / board.GetWidth()));
             }
 
             if (Canvas.GetTop(((Rectangle) sender)) == 0)
@@ -80,7 +82,7 @@ namespace GameOfLife
             }
             else
             {
-                x = Convert.ToInt32(Canvas.GetTop(((Rectangle) sender)) / (GameBoard.Width / board.GetWidth()));
+                x = Convert.ToInt32(Canvas.GetTop(((Rectangle) sender)) / (GameBoard.Height / board.GetHeight()));
             }
 
             if (!figure)
@@ -150,24 +152,7 @@ namespace GameOfLife
             }
         }
 
-        private void SizeParameters_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var life = int.Parse(LifeTextBox.Text);
-                var stayAlive = int.Parse(StayAliveTextBox.Text);
-                var toBeBorn = int.Parse(BornTextBox.Text);
-                board.SetLife(life);
-                board.SetNeighborsToStayAlive(stayAlive);
-                board.SetNeighborsToBeBorn(toBeBorn);
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception.ToString());
-            }
-        }
-
-    private void ButtonStartGen_Click(object sender, RoutedEventArgs e)
+        private void ButtonStartGen_Click(object sender, RoutedEventArgs e)
         {
             int i = 0;
             int num = 0;

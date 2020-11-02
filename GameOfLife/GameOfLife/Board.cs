@@ -21,9 +21,10 @@ namespace GameOfLife
         public static readonly int GOING_TO_DIE = 2;
         public static readonly int JUST_BORN = 3;
 
-        public int lifeParameter = 0;
-        public int neighborsToStayAliveParameter = 0;
-        public int neighborsToBeBornParameter = 3;
+        public int LifeParameter = 0;
+        public int MaxNeighbors = 3;
+        public int MinNeighbors = 2;
+        public int NeighborsToBeBornParameter = 3;
 
 
         private static readonly string START_FILE_PATH =
@@ -108,8 +109,8 @@ namespace GameOfLife
                 for (var j = 0; j < GetWidth(); j++)
                 {
                     int neighbors = CountNeighbors(i, j, fields);
-                    if (neighbors == neighborsToBeBornParameter && !isAlive(fields[i, j])) newFields[i, j] = ALIVE_FIELD;
-                    else if (!neighborsToStayAlive(neighbors) && isAlive(fields[i, j]))
+                    if (neighbors == NeighborsToBeBornParameter && !isAlive(fields[i, j])) newFields[i, j] = ALIVE_FIELD;
+                    else if (!NeighborsToStayAlive(neighbors) && isAlive(fields[i, j]))
                         newFields[i, j] = EMPTY_FIELD;
                 }
             }
@@ -122,25 +123,7 @@ namespace GameOfLife
                     if (!isAlive(fields[i, j]) && newFields[i, j] == ALIVE_FIELD) newFields[i, j] = JUST_BORN;
                     else if (isAlive(fields[i, j]) && isAlive(newFields[i, j])) newFields[i, j] = ALIVE_FIELD;
 
-                    if (!neighborsToStayAlive(neighbors) && isAlive(newFields[i, j])) newFields[i, j] = GOING_TO_DIE;
-
-                    //life counting
-                    if (lifeParameter != 0)
-                    {
-                        if (isAlive(newFields[i, j]))
-                        {
-                            fieldsLifeCounter[i, j] = ++fieldsLifeCounter[i, j];
-                            if (fieldsLifeCounter[i, j] == lifeParameter)
-                            {
-                                newFields[i, j] = EMPTY_FIELD;
-                                fieldsLifeCounter[i, j] = 0;
-                            }
-                        }
-                        else
-                        {
-                            fieldsLifeCounter[i, j] = 0;
-                        }
-                    }
+                    if (!NeighborsToStayAlive(neighbors) && isAlive(newFields[i, j])) newFields[i, j] = GOING_TO_DIE;
                 }
             }
 
@@ -149,12 +132,12 @@ namespace GameOfLife
                 for (var j = 0; j < GetWidth(); j++)
                 {
                     //life counting
-                    if (lifeParameter != 0)
+                    if (LifeParameter != 0)
                     {
                         if (isAlive(newFields[i, j]))
                         {
                             fieldsLifeCounter[i, j] = ++fieldsLifeCounter[i, j];
-                            if (fieldsLifeCounter[i, j] == lifeParameter)
+                            if (fieldsLifeCounter[i, j] == LifeParameter)
                             {
                                 newFields[i, j] = EMPTY_FIELD;
                                 fieldsLifeCounter[i, j] = 0;
@@ -171,16 +154,9 @@ namespace GameOfLife
             fields = newFields;
         }
 
-        public bool neighborsToStayAlive(int neighbors)
+        public bool NeighborsToStayAlive(int neighbors)
         {
-            if (neighborsToStayAliveParameter != 0)
-            {
-                return neighbors == neighborsToStayAliveParameter;
-            }
-            else
-            {
-                return (neighbors == 2 || neighbors == 3);
-            }
+            return neighbors >= MinNeighbors && neighbors <= MaxNeighbors;
         }
 
         public void SetWidth(int width)
@@ -205,17 +181,22 @@ namespace GameOfLife
 
         public void SetLife(int life)
         {
-            lifeParameter = life;
+            LifeParameter = life;
         }
 
-        public void SetNeighborsToStayAlive(int param)
+        public void SetMaxNeighbors(int param)
         {
-            neighborsToStayAliveParameter = param;
+            MaxNeighbors = param;
+        }
+
+        public void SetMinNeighbors(int param)
+        {
+            MinNeighbors = param;
         }
 
         public void SetNeighborsToBeBorn(int param)
         {
-            neighborsToBeBornParameter = param;
+            NeighborsToBeBornParameter = param;
         }
 
         public SolidColorBrush GetFieldColor(int x, int y)

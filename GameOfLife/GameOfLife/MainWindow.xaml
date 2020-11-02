@@ -4,14 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameOfLife"
+        xmlns:userControls="clr-namespace:GameOfLife.UserControls"
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="800">
 
+    <!--command-->
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Paste" CanExecute="PasteCommand_CanExecute" Executed="PasteCommand_Executed" />
     </Window.CommandBindings>
 
-
+    <!--Data template-->
     <Window.Resources>
         <DataTemplate DataType="{x:Type local:Info}">
             <Border BorderBrush="LightBlue" BorderThickness="3" CornerRadius="12">
@@ -26,6 +28,7 @@
             </Border>
         </DataTemplate>
 
+        <!--Trigger-->
         <Style x:Key = "TriggerStyle" TargetType = "Button">
             <Style.Triggers>
                 <Trigger Property = "IsMouseOver" Value = "True">
@@ -66,6 +69,7 @@
                 <local:Info x:Key="theInfo" Author="Damian Marek" Version="v0.8"/>
             </StackPanel.Resources>
             <StackPanel.Triggers>
+                <!--Animation-->
                 <EventTrigger RoutedEvent="StackPanel.Loaded">
                     <BeginStoryboard>
                         <Storyboard>
@@ -80,19 +84,12 @@
             </StackPanel.Triggers>
             <ContentControl Content="{StaticResource theInfo}" Margin="-85,0,100,0" />
         </StackPanel>
-        <TextBox x:Name="LifeTextBox" HorizontalAlignment="Left" Height="24" Margin="675,241,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30" PreviewTextInput="NumberValidationTextBox"/>
-        <Label Content="life parameter:" HorizontalAlignment="Left" Margin="580,239,0,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.116,1.192"/>
-        <Button x:Name="SetSParametersButton" Content="Set" HorizontalAlignment="Left" Margin="640,339,0,0" VerticalAlignment="Top" Width="75" Click="SizeParameters_Click" Height="21">
-        </Button>
-        <Label Content="Stay alive:" HorizontalAlignment="Left" Margin="579,269,0,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.116,1.192"/>
-        <Label Content="Born:" HorizontalAlignment="Left" Margin="585,304,0,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.116,1.192"/>
-        <TextBox x:Name="StayAliveTextBox" HorizontalAlignment="Left" Height="24" Margin="675,301,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30" PreviewTextInput="NumberValidationTextBox"/>
-        <TextBox x:Name="BornTextBox" HorizontalAlignment="Left" Height="24" Margin="675,270,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30" PreviewTextInput="NumberValidationTextBox"/>
-        <Button x:Name="TabButton" Content="Tab" HorizontalAlignment="Left" Margin="55,400,0,0" VerticalAlignment="Top" Width="75" Click="TubButton_Click"/>
+       <Button x:Name="TabButton" Content="Tab" HorizontalAlignment="Left" Margin="55,400,0,0" VerticalAlignment="Top" Width="75" Click="TubButton_Click"/>
         <Label Content="Figures:" HorizontalAlignment="Left" Margin="58,340,0,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.116,1.192"/>
         <Button x:Name="GliderButton" Content="Glider" HorizontalAlignment="Left" Margin="55,370,0,0" VerticalAlignment="Top" Width="75" Click="GliderButton_Click"/>
         <Button x:Name="FrogButton" Content="Frog" HorizontalAlignment="Left" Margin="55,430,0,0" VerticalAlignment="Top" Width="75" Click="FrogButton_Click"/>
-
+         <userControls:Params x:Name="Params" >
+         </userControls:Params>
     </Grid>
 
 </Window>
