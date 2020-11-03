@@ -43,11 +43,15 @@ namespace GameOfLife
         private void ButtonStart_Click(object sender, RoutedEventArgs e)
         {
             board = new Board();
+            Params.Board = board;
+            HeightTextBox.Text = board.GetHeight().ToString();
+            WidthTextBox.Text = board.GetWidth().ToString();
             DrawBoard();
         }
 
         private void DrawBoard()
         {
+            GameBoard.Children.Clear();
             for (var i = 0; i < board.GetHeight(); i++)
             {
                 for (var j = 0; j < board.GetWidth(); j++)
@@ -208,5 +212,9 @@ namespace GameOfLife
             figurePos = Figures.Glider();
         }
 
+        private void Params_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -15,7 +15,7 @@
             <ColumnDefinition Width="30*"/>
         </Grid.ColumnDefinitions>
         <TextBox x:Name="LifeTextBox" HorizontalAlignment="Left" Height="24" Margin="20,241,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30" PreviewTextInput="NumberValidationTextBox" Grid.Column="3"/>
-        <Label Content="Life parameter:" HorizontalAlignment="Left" Margin="115,239,0,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.116,1.192" Grid.ColumnSpan="2" Grid.Column="2"/>
+        <Label Content="Survivability:" HorizontalAlignment="Left" Margin="115,239,0,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.116,1.192" Grid.ColumnSpan="2" Grid.Column="2"/>
         <Button x:Name="SetSParametersButton" Content="Set" HorizontalAlignment="Left" Margin="175,365,0,0" VerticalAlignment="Top" Width="75" Click="SizeParameters_Click" Height="21" Grid.ColumnSpan="2" Grid.Column="2"/>
         <Label Content="Min neighbors:" HorizontalAlignment="Left" Margin="114,269,0,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.116,1.192" Grid.ColumnSpan="2" Grid.Column="2"/>
         <Label Content="Born:" HorizontalAlignment="Left" Margin="118,330,0,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.116,1.192" Grid.Column="2"/>
